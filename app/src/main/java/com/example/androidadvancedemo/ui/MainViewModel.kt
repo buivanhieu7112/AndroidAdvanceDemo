@@ -10,19 +10,25 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val userRepository: UserRepository) : BaseViewModel() {
+    private lateinit var userAdapter: UserAdapter
+
     fun getUsers() {
         val disposable: Disposable = userRepository.getUsers()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ result -> handleSuccess(result)}, { error -> handleFailure(error) })
+            .subscribe({ result -> handleSuccess(result) }, { error -> handleFailure(error) })
         launchDiposable(disposable)
     }
 
+    fun getAdapter(userAdapter: UserAdapter) {
+        this.userAdapter = userAdapter
+    }
+
     private fun handleSuccess(result: MutableList<User>) {
-        Log.d("SUCCESS", "${result.size} ${result[1].name}")
+        userAdapter.submitList(result)
     }
 
     private fun handleFailure(error: Throwable) {
-        Log.e("ERROR", "Handle Error ${error.localizedMessage}")
+        Log.e("ERROR", error.localizedMessage)
     }
 }
