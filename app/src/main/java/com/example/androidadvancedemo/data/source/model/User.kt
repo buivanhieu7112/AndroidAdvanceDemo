@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 data class User @Inject constructor(
     @SerializedName("id") var id: String?,
     @SerializedName("login") var name: String?,

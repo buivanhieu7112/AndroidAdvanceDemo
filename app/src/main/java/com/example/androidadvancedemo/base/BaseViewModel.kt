@@ -8,7 +8,7 @@ abstract class BaseViewModel : ViewModel() {
 
     private var compositeDisposable = CompositeDisposable()
 
-    fun launchDiposable(disposable: Disposable) {
+    fun launchDisposable(disposable: Disposable) {
         compositeDisposable.add(disposable)
     }
 
