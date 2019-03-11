@@ -2,10 +2,7 @@ package com.example.androidadvancedemo.utils.di.component
 
 import android.app.Application
 import com.example.androidadvancedemo.MyApplication
-import com.example.androidadvancedemo.utils.di.modules.ActivityBuildersModule
-import com.example.androidadvancedemo.utils.di.modules.AppModule
-import com.example.androidadvancedemo.utils.di.modules.NetWorkModule
-import com.example.androidadvancedemo.utils.di.modules.ViewModelModule
+import com.example.androidadvancedemo.utils.di.modules.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -18,7 +15,8 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         ActivityBuildersModule::class,
         NetWorkModule::class,
-        ViewModelModule::class]
+        AppModule::class,
+        RepositoryModule::class]
 )
 interface AppComponent : AndroidInjector<MyApplication> {
     @Component.Builder

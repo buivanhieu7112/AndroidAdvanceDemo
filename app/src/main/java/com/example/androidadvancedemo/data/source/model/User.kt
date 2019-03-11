@@ -1,11 +1,18 @@
 package com.example.androidadvancedemo.data.source.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import javax.inject.Inject
-import javax.inject.Singleton
 
+@Entity(tableName = "USER")
 data class User @Inject constructor(
-    @SerializedName("id") var id: String?,
-    @SerializedName("login") var name: String?,
-    @SerializedName("avatar_url") var avatar: String?
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id")
+    @SerializedName("id") var id: String,
+    @ColumnInfo(name = "name")
+    @SerializedName("login") var name: String,
+    @ColumnInfo(name = "avatar")
+    @SerializedName("avatar_url") var avatar: String
 )

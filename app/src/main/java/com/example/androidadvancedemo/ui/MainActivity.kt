@@ -14,14 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidadvancedemo.R
 import com.example.androidadvancedemo.data.source.model.User
 import com.example.androidadvancedemo.utils.ItemCLickListener
+import com.example.androidadvancedemo.utils.ItemMenuClickListener
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity(), ItemCLickListener {
+class MainActivity : DaggerAppCompatActivity(), ItemCLickListener, ItemMenuClickListener {
     private lateinit var viewModel: MainViewModel
     private var searchView: SearchView? = null
-    private var userAdapter = UserAdapter(this)
+    private var userAdapter = UserAdapter(this, this)
+    private var isOnline = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,6 +52,10 @@ class MainActivity : DaggerAppCompatActivity(), ItemCLickListener {
         Toast.makeText(this, user.name, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onItemMenuClick(user: User) {
+        viewModel.insertUserToLocal(user)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.app_menu, menu)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -59,13 +65,28 @@ class MainActivity : DaggerAppCompatActivity(), ItemCLickListener {
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 Toast.makeText(applicationContext, "search $query", Toast.LENGTH_SHORT).show()
-                viewModel.getUserBySearch(query)
-                return true
+                return when (isOnline) {
+                    true -> {
+                        viewModel.getUserBySearch(query)
+                        true
+                    }
+                    false -> {
+                        viewModel.getUsersLocalBySearch(query)
+                        true
+                    }
+                }
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
+        })
+        searchView!!.setOnCloseListener(object : SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                onBackPressed()
+                return false
+            }
+
         })
         return true
     }
@@ -73,14 +94,31 @@ class MainActivity : DaggerAppCompatActivity(), ItemCLickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_online -> {
+                Toast.makeText(this, "online", Toast.LENGTH_SHORT).show()
+                viewModel.getUsers()
+                isOnline = true
+                return true
             }
             R.id.action_offline -> {
+                Toast.makeText(this, "offline", Toast.LENGTH_SHORT).show()
+                viewModel.getUsersLocal()
+                isOnline = false
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
-        viewModel.getUsers()
+        when (isOnline) {
+            true -> {
+                viewModel.getUsers()
+                return
+            }
+            false -> {
+                viewModel.getUsersLocal()
+                return
+            }
+        }
     }
 }
