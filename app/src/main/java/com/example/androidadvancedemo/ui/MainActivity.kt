@@ -54,6 +54,7 @@ class MainActivity : DaggerAppCompatActivity(), ItemCLickListener, ItemMenuClick
 
     override fun onItemMenuClick(user: User) {
         viewModel.insertUserToLocal(user)
+        viewModel.insertPet(user.id)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -102,6 +103,7 @@ class MainActivity : DaggerAppCompatActivity(), ItemCLickListener, ItemMenuClick
             R.id.action_offline -> {
                 Toast.makeText(this, "offline", Toast.LENGTH_SHORT).show()
                 viewModel.getUsersLocal()
+                viewModel.getUserAndPet()
                 isOnline = false
                 return true
             }

@@ -15,6 +15,6 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideUserRepository(apiService: ApiService, userDatabase: UserDatabase): UserRepository {
-        return UserRepository(UserRemoteDataSource(apiService), UserLocalDataSource(userDatabase.userDao()))
+        return UserRepository(UserRemoteDataSource(apiService), UserLocalDataSource(userDatabase.userDao(),userDatabase.petDao()))
     }
 }
